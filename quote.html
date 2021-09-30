@@ -163,7 +163,7 @@
 					<!-- Actual Form -->
 					<form>
 						<!-- Select building type -->
-						<div class="col-md-4">
+						<div class="input-group-addon">
 							<label for="building-type">Type of Building</label>
 							<select id="building-type" class="form-control pointer" name="quote[buildingType][required]">
 								<option id="select" value="">--- Select ---</option>
@@ -177,49 +177,49 @@
 						<hr />
 
 						<!-- Number of apartments -->
-						<div id="number-of-apartments" class="col-md-4" hidden>
+						<div id="number-of-apartments" class="input-group-addon" hidden>
 							<label for="number-of-apartments">Amount of Apartments in Building</label>
-							<input type="number" min="0" value="" class="form-control" name="number-of-apartments"> 
+							<input type="number" min="0" pattern="[0-9]" value="" class="form-control" name="number-of-apartments"> 
 						</div>
 						<!-- Number of  companies -->
-						<div id="number-of-companies" class="col-md-4" hidden>
+						<div id="number-of-companies" class="input-group-addon" hidden>
 							<label for="number-of-companies">Number of Companies</label>
-							<input type="number" min="0" value="" class="form-control" name="number-of-companies"> 
+							<input type="number" min="0" pattern="[0-9]" value="" class="form-control" name="number-of-companies"> 
 						</div>
 						<!-- Number of corporations -->
-						<div id="number-of-corporations" class="col-md-4" hidden>
+						<div id="number-of-corporations" class="input-group-addon" hidden>
 							<label for="number-of-corporations">Number of Corporations</label>
-							<input type="number" min="0" value="" class="form-control" name="number-of-corporations"> 
+							<input type="number" min="0" pattern="[0-9]" value="" class="form-control" name="number-of-corporations"> 
 						</div>
 						<!-- Number of floors -->
-						<div id="number-of-floors" class="col-md-4" hidden>
+						<div id="number-of-floors" class="input-group-addon" hidden>
 							<label for="number-of-floors">Amount of Above Ground Floors</label>
-							<input type="number" min="0" value="" class="form-control" name="number-of-floors"> 
+							<input type="number" min="0" pattern="[0-9]" value="" class="form-control" name="number-of-floors"> 
 						</div>
 						<!-- Number of basements -->
-						<div id="number-of-basements" class="col-md-4" hidden>
+						<div id="number-of-basements" class="input-group-addon" hidden>
 							<label for="number-of-basements">Amount of Basements</label>
-							<input type="number" min="0" value="" class="form-control" name="number-of-basements"> 
+							<input type="number" min="0" pattern="[0-9]" value="" class="form-control" name="number-of-basements"> 
 						</div>
 						<!-- Number of elevators deployed -->
-						<div id="number-of-elevators" class="col-md-4" hidden>
+						<div id="number-of-elevators" class="input-group-addon" hidden>
 							<label for="number-of-cages">Number of Elevator Cages to be Deployed</label>
-							<input type="number" min="0" value="" class="form-control" name="number-of-cages"> 
+							<input type="number" min="0" pattern="[0-9]" value="" class="form-control" name="number-of-cages"> 
 						</div>
 						<!-- Number of parking spots -->
-						<div id="number-of-parking-spots" class="col-md-4" hidden>
+						<div id="number-of-parking-spots" class="input-group-addon" hidden>
 							<label for="parking-spots">Number of Parking Spaces Available</label>
-							<input type="number" min="0" value="" class="form-control" name="parking-spots"> 
+							<input type="number" min="0" pattern="[0-9]" value="" class="form-control" name="parking-spots"> 
 						</div>
 						<!-- Max occupancy -->
-						<div id="maximum-occupancy" class="col-md-4" hidden>
+						<div id="maximum-occupancy" class="input-group-addon" hidden>
 							<label for="max-occupants">Max Number of Occupants per Floor</label>
-							<input type="number" min="0" value="" class="form-control" name="max-occupants">
+							<input type="number" min="0" pattern="[0-9]" value="" class="form-control" name="max-occupants">
 						</div>
 						<!-- Business hours -->
-						<div id="business-hours" class="col-md-4" hidden>
+						<div id="business-hours" class="input-group-addon" hidden>
 							<label for="business-hours">Business Hours</label>
-							<input type="number" min="0" max="24" value="" class="form-control" name="business-hours">
+							<input type="number" min="0" pattern="[0-9]" max="24" value="" class="form-control" name="business-hours">
 						</div>
 
 						 <!-- Product Line -->

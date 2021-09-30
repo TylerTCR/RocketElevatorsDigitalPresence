@@ -137,6 +137,7 @@ function changeBuilding() {
         numOfParkingSpots.hidden = true;
         maxOccupants.hidden = true;
         businessHours.hidden = true;
+        clearFields();
     }
 }   // End of changeBuilding()
 
@@ -159,7 +160,7 @@ function elementChange() {
 
 /** Simply clears all field values, only done when the user changes building type. */
 function clearFields() {
-    numOfFloors.lastElementChild.value = "";
+    numOfApartments.lastElementChild.value = "";
     numOfFloors.lastElementChild.value = "";
     numOfBasements.lastElementChild.value = "";
     numOfCompanies.lastElementChild.value = "";
@@ -168,6 +169,11 @@ function clearFields() {
     numOfParkingSpots.lastElementChild.value = "";
     maxOccupants.lastElementChild.value = "";
     businessHours.lastElementChild.value = "";
+    elevatorAmount.value = "";
+    elevatorUnitPrice.value = "";
+    elevatorTotalPrice.value = "";
+    installationFee.value = "";
+    finalPrice.value = "";
 }
 
 /*** Get/update the last 4 results. 
@@ -207,14 +213,23 @@ function getResults() {
 
 /** Residential Calculation */
 function calculateResidential() {
-    let number_of_apartments = numOfApartments.lastElementChild.value;
-    let number_of_floors = numOfFloors.lastElementChild.value;
+    let number_of_apartments = Number(numOfApartments.lastElementChild.value);
+    let number_of_floors = Number(numOfFloors.lastElementChild.value);
     const STORIES_PER_COLUMN = 20;
     const APARTMENTS_PER_SHAFT = 6;
     let amountOfShafts = 0, AvgDoorsPerFloor = 0, columns = 0;
 
-    // Get the average of door for each floor
-    AvgDoorsPerFloor = number_of_apartments / number_of_floors;
+    // Check for decimal values, if there is one alert user and end function
+    if (Number.isInteger(number_of_apartments) === false || Number.isInteger(number_of_floors) === false) {
+        alert("Please make sure all values are whole numbers.");
+        return;
+    }
+
+    // Checking if number of floors and apartments is greater than 0 to get proper calculation
+    if (number_of_floors > 0 && number_of_apartments > 0) {
+        // Get the average of door for each floor
+        AvgDoorsPerFloor = number_of_apartments / number_of_floors;
+    } else {AvgDoorsPerFloor = 0;}
 
     // Check how many shafts are needed
     if (AvgDoorsPerFloor > 0 && AvgDoorsPerFloor < APARTMENTS_PER_SHAFT) {
@@ -230,13 +245,13 @@ function calculateResidential() {
         for (let i = 0; i < columns; i++) {
             amountOfShafts *= 2;
         }
-    } else {
+    } else if (number_of_floors > 0) {
         columns = 1;
-    }
+    } else {columns = 0;}
     
     // Change the Amount of Elevators result
     elevatorAmount.value = Math.ceil(amountOfShafts);
-
+    
     // Finally, call getResults()
     getResults();
 } // End residential calculation
@@ -244,7 +259,18 @@ function calculateResidential() {
 
 /** Commercial Calculation */
 function calculateCommercial() {
-    elevatorAmount.value = numOfElevators.lastElementChild.value;
+    let defaultAmountOfElevators = 0;
+
+    // Check for decimal values, if there is one alert user and stop the calculation
+    if (Number.isInteger(Number(numOfElevators.lastElementChild.value)) === false) {
+        alert("Please make sure all values are whole numbers.");
+        return;
+    } 
+
+    // Check if the number entered is greater than 1, if not, default to 0 elevators.
+    if (numOfElevators.lastElementChild.value > 0) {
+        elevatorAmount.value = Number(numOfElevators.lastElementChild.value);
+    } else {elevatorAmount.value = defaultAmountOfElevators;}
 
     getResults();
 } // End commercial calculation
@@ -258,25 +284,38 @@ function calculateCorporate() {
     let occupants_per_floor = Number(maxOccupants.lastElementChild.value);
     let amountOfStories = 0, totalOccupantsNum = 0, requiredElevators = 0, columns = 0, totalElevatorNum = 0; 
 
-    // Get total number of occupants
-    amountOfStories = number_of_floors + number_of_basements;
-    totalOccupantsNum = occupants_per_floor * amountOfStories;
+    // Check for decimal values, if there is one alert user and stop the calculation
+    if (Number.isInteger(number_of_floors) === false || Number.isInteger(number_of_basements) === false || Number.isInteger(occupants_per_floor) === false) {
+        alert("Please make sure all values are whole numbers.");
+        return;
+    }
 
-    // Get the amount of elevators required
-    requiredElevators = totalOccupantsNum / 1000;
+    // If any of this is true, simply make elevatorAmount equal to 0 and complete results
+    if (number_of_floors <= 0 || number_of_basements < 0 || occupants_per_floor <= 0) {
+        elevatorAmount.value = totalElevatorNum;
+        getResults();
+    } else { // Otherwise, continue with the calculation
+        // Get total number of occupants
+        amountOfStories = number_of_floors + number_of_basements;
+        totalOccupantsNum = occupants_per_floor * amountOfStories;
+        
+        // Get the amount of elevators required
+        requiredElevators = totalOccupantsNum / 1000;
 
-    // Get number of columns required and elevators per column
-    columns = amountOfStories / STORIES_PER_COLUMN;
+        // Get number of columns required and elevators per column
+        columns = amountOfStories / STORIES_PER_COLUMN;
+        
+        /* Get total amount of elevators: divide number of elevators by the number of columns to
+        get the amount of elevators per column, then multiply that by the amount of columns. */
+        totalElevatorNum = ((requiredElevators / columns) * columns);
+
+        // Change the Amount of Elevators result
+        elevatorAmount.value = Math.ceil(totalElevatorNum);
+
+        // Finally, call getResults()
+        getResults();
+    }
     
-    /* Get total amount of elevators: divide number of elevators by the number of columns to
-       get the amount of elevators per column, then multiply that by the amount of columns. */
-    totalElevatorNum = ((requiredElevators / columns) * columns);
-
-    // Change the Amount of Elevators result
-    elevatorAmount.value = totalElevatorNum;
-
-    // Finally, call getResults()
-    getResults();
 } // End corporate calculation
 
 
@@ -288,23 +327,35 @@ function calculateHybrid() {
     let occupants_per_floor = Number(maxOccupants.lastElementChild.value);
     let amountOfStories = 0, totalOccupantsNum = 0, requiredElevators = 0, columns = 0, totalElevatorNum = 0; 
 
-    // Get total number of occupants
-    amountOfStories = number_of_floors + number_of_basements;
-    totalOccupantsNum = occupants_per_floor * amountOfStories;
+    // Check for decimal values, if there is one alert user and stop the calculation
+    if (Number.isInteger(number_of_floors) === false || Number.isInteger(number_of_basements) === false || Number.isInteger(occupants_per_floor) === false) {
+        alert("Please make sure all values are whole numbers.");
+        return;
+    }
 
-    // Get the amount of elevators required
-    requiredElevators = totalOccupantsNum / 1000;
+    // If any of this is true, simply make elevatorAmount equal to 0 and complete results
+    if (number_of_floors <= 0 || number_of_basements < 0 || occupants_per_floor <= 0) {
+        elevatorAmount.value = totalElevatorNum;
+        getResults();
+    } else { // Otherwise, continue with the calculation
+        // Get total number of occupants
+        amountOfStories = number_of_floors + number_of_basements;
+        totalOccupantsNum = occupants_per_floor * amountOfStories;
 
-    // Get number of columns required and elevators per column
-    columns = amountOfStories / STORIES_PER_COLUMN;
-    
-    /* Get total amount of elevators: divide number of elevators by the number of columns to
-       get the amount of elevators per column, then multiply that by the amount of columns. */
-    totalElevatorNum = ((requiredElevators / columns) * columns);
+        // Get the amount of elevators required
+        requiredElevators = totalOccupantsNum / 1000;
 
-    // Change the Amount of Elevators result
-    elevatorAmount.value = totalElevatorNum;
+        // Get number of columns required and elevators per column
+        columns = amountOfStories / STORIES_PER_COLUMN;
+        
+        /* Get total amount of elevators: divide number of elevators by the number of columns to
+        get the amount of elevators per column, then multiply that by the amount of columns. */
+        totalElevatorNum = ((requiredElevators / columns) * columns);
 
-    // Finally, call getResults()
-    getResults();
+        // Change the Amount of Elevators result
+        elevatorAmount.value = Math.ceil(totalElevatorNum);
+
+        // Finally, call getResults()
+        getResults();
+    }
 } // End hybrid calculation
