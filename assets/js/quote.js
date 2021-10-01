@@ -228,29 +228,33 @@ function calculateResidential() {
     // Checking if number of floors and apartments is greater than 0 to get proper calculation
     if (number_of_floors > 0 && number_of_apartments > 0) {
         // Get the average of door for each floor
-        AvgDoorsPerFloor = number_of_apartments / number_of_floors;
+        AvgDoorsPerFloor = Math.ceil(number_of_apartments / number_of_floors);
     } else {AvgDoorsPerFloor = 0;}
 
     // Check how many shafts are needed
-    if (AvgDoorsPerFloor > 0 && AvgDoorsPerFloor < APARTMENTS_PER_SHAFT) {
+    if (AvgDoorsPerFloor >= APARTMENTS_PER_SHAFT) {
+        amountOfShafts = Math.ceil(AvgDoorsPerFloor / APARTMENTS_PER_SHAFT);
+    } else if (AvgDoorsPerFloor > 0 && AvgDoorsPerFloor < APARTMENTS_PER_SHAFT) {
         amountOfShafts = 1;
-    } else if (AvgDoorsPerFloor >= APARTMENTS_PER_SHAFT) {
-        amountOfShafts = AvgDoorsPerFloor % APARTMENTS_PER_SHAFT;
     }
+
+    console.log(`Shafts needed before going to columns: ${amountOfShafts}`);
 
     // Check how many columns are needed, and double the amount of shafts for every 20 stories (or for each column)
     if (number_of_floors > STORIES_PER_COLUMN) {
-        columns = number_of_floors / STORIES_PER_COLUMN;
+        columns = Math.ceil(number_of_floors / STORIES_PER_COLUMN);
+        console.log(`Columns needed: ${columns}`);
         // Double the amount of shafts for each iteration
-        for (let i = 0; i < columns; i++) {
+        for (let i = 1; i < (columns - 1); i++) {
             amountOfShafts *= 2;
         }
     } else if (number_of_floors > 0) {
         columns = 1;
+        console.log(`Columns needed: ${columns}`);
     } else {columns = 0;}
     
     // Change the Amount of Elevators result
-    elevatorAmount.value = Math.ceil(amountOfShafts);
+    elevatorAmount.value = amountOfShafts;
     
     // Finally, call getResults()
     getResults();
@@ -300,17 +304,17 @@ function calculateCorporate() {
         totalOccupantsNum = occupants_per_floor * amountOfStories;
         
         // Get the amount of elevators required
-        requiredElevators = totalOccupantsNum / 1000;
+        requiredElevators = Math.ceil(totalOccupantsNum / 1000);
 
         // Get number of columns required and elevators per column
-        columns = amountOfStories / STORIES_PER_COLUMN;
+        columns = Math.ceil(amountOfStories / STORIES_PER_COLUMN);
         
         /* Get total amount of elevators: divide number of elevators by the number of columns to
         get the amount of elevators per column, then multiply that by the amount of columns. */
-        totalElevatorNum = ((requiredElevators / columns) * columns);
+        totalElevatorNum = Math.ceil((requiredElevators / columns) * columns);
 
         // Change the Amount of Elevators result
-        elevatorAmount.value = Math.ceil(totalElevatorNum);
+        elevatorAmount.value = totalElevatorNum;
 
         // Finally, call getResults()
         getResults();
@@ -343,17 +347,17 @@ function calculateHybrid() {
         totalOccupantsNum = occupants_per_floor * amountOfStories;
 
         // Get the amount of elevators required
-        requiredElevators = totalOccupantsNum / 1000;
+        requiredElevators = Math.ceil(totalOccupantsNum / 1000);
 
         // Get number of columns required and elevators per column
-        columns = amountOfStories / STORIES_PER_COLUMN;
+        columns = Math.ceil(amountOfStories / STORIES_PER_COLUMN);
         
         /* Get total amount of elevators: divide number of elevators by the number of columns to
         get the amount of elevators per column, then multiply that by the amount of columns. */
-        totalElevatorNum = ((requiredElevators / columns) * columns);
+        totalElevatorNum = Math.ceil((requiredElevators / columns) * columns);
 
         // Change the Amount of Elevators result
-        elevatorAmount.value = Math.ceil(totalElevatorNum);
+        elevatorAmount.value = totalElevatorNum;
 
         // Finally, call getResults()
         getResults();
