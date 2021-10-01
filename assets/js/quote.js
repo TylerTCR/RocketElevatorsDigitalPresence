@@ -238,19 +238,15 @@ function calculateResidential() {
         amountOfShafts = 1;
     }
 
-    console.log(`Shafts needed before going to columns: ${amountOfShafts}`);
-
     // Check how many columns are needed, and double the amount of shafts for every 20 stories (or for each column)
     if (number_of_floors > STORIES_PER_COLUMN) {
         columns = Math.ceil(number_of_floors / STORIES_PER_COLUMN);
-        console.log(`Columns needed: ${columns}`);
         // Double the amount of shafts for each iteration
         for (let i = 1; i < (columns - 1); i++) {
             amountOfShafts *= 2;
         }
     } else if (number_of_floors > 0) {
         columns = 1;
-        console.log(`Columns needed: ${columns}`);
     } else {columns = 0;}
     
     // Change the Amount of Elevators result
